@@ -20,6 +20,7 @@ RUN apt-get install -y ros-foxy-desktop python3-pip python3-colcon-common-extens
 
 RUN ["/bin/bash", "-c", "source /opt/ros/foxy/setup.bash"]
 RUN pip3 install -U argcomplete
+RUN apt-get install -y ros-foxy-diagnostic-updater ros-foxy-geographic-msgs libgeographic-dev
 
 RUN echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc
 
