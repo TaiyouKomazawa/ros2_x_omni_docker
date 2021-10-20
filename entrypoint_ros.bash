@@ -13,7 +13,11 @@ if [ ! -e /dev/ttyRPLidar ] && [ -e ${RPLIDAR_PATH} ]; then
 fi
 
 cd /ros2_ws
-colcon build
 source install/setup.bash
 source /opt/ros/foxy/setup.bash
-ros2 launch x_omni_components nodes.launch.py
+#colcon build   #起動の高速化のためビルドをコメントアウトする
+source install/setup.bash
+source /opt/ros/foxy/setup.bash
+ros2 launch x_omni_components nodes.launch.py &
+ros2 launch ros2_x_omni_imu_filter pose_merger_ekf.launch.py
+#while :; do sleep 2073600; done

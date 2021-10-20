@@ -20,15 +20,22 @@ RUN apt-get install -y ros-foxy-desktop python3-pip python3-colcon-common-extens
 
 RUN ["/bin/bash", "-c", "source /opt/ros/foxy/setup.bash"]
 RUN pip3 install -U argcomplete
-RUN apt-get install -y ros-foxy-diagnostic-updater ros-foxy-geographic-msgs libgeographic-dev
 
-RUN echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc
+RUN apt-get update && apt-get upgrade -y
+#robot-localization depends.
+RUN apt-get install -y  ros-foxy-geographic-msgs libgeographic-dev ros-foxy-diagnostic-*
+#depthai-ros depends.
+RUN apt-get install -y libopencv-dev python3-rosdep python3-vcstool wget ros-foxy-vision-msgs ros-foxy-camera-info-manager
+RUN rosdep init
+RUN rosdep update
+RUN wget -qO- https://raw.githubusercontent.com/luxonis/depthai-ros/foxy-devel/install_dependencies.sh | bash
 
-RUN ["/bin/bash", "-c", "source ~/.bashrc"]
-
-RUN echo "source /ros2_ws/install/setup.bash" >> ~/.bashrc
-
-RUN apt-get update
 RUN apt-get install -y net-tools iputils-ping iproute2 tcpdump
 
+RUN apt-get install -y ros-foxy-rmw-cyclonedds-cpp
+RUN echo -e "net.core.rmem_max=8388608\nnet.core.rmem_default=8388608\n" >> /etc/sysctl.d/60-cyclonedds.conf
+RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc
+RUN echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc
+RUN ["/bin/bash", "-c", "source ~/.bashrc"]
+RUN echo "source /ros2_ws/install/setup.bash" >> ~/.bashrc
 ENTRYPOINT ["/bin/bash", "-c", "/entrypoint_ros.bash"]

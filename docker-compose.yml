@@ -16,5 +16,6 @@ services:
     environment:
       - DISPLAY=${DISPLAY}
       - ROS_DOMAIN_ID=1
+      - CYCLONEDDS_URI=/ros2_ws/cyclonedds.xml
     restart: always
 #    tty: true
