@@ -3,8 +3,6 @@ LABEL version="1.0"
 LABEL description="Dockerの練習も兼ねたロボット動作環境の構築"
 LABEL tag="x_omni_os"
 
-RUN sed -i.org -e 's|ports.ubuntu.com|jp.archive.ubuntu.com|g' /etc/apt/sources.list
-
 ENV TZ=Asia/Tokyo
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -23,7 +21,8 @@ RUN pip3 install -U argcomplete
 
 RUN apt-get update && apt-get upgrade -y
 #robot-localization depends.
-RUN apt-get install -y  ros-foxy-geographic-msgs libgeographic-dev ros-foxy-diagnostic-*
+RUN apt-get install -y  ros-foxy-geographic-msgs libgeographic-dev ros-foxy-diagnostic-* ros-foxy-tf-transformations
+RUN pip3 install transforms3d
 #depthai-ros depends.
 RUN apt-get install -y libopencv-dev python3-rosdep python3-vcstool wget ros-foxy-vision-msgs ros-foxy-camera-info-manager
 RUN rosdep init
@@ -33,7 +32,7 @@ RUN wget -qO- https://raw.githubusercontent.com/luxonis/depthai-ros/foxy-devel/i
 RUN apt-get install -y net-tools iputils-ping iproute2 tcpdump
 
 RUN apt-get install -y ros-foxy-rmw-cyclonedds-cpp
-RUN echo -e "net.core.rmem_max=8388608\nnet.core.rmem_default=8388608\n" >> /etc/sysctl.d/60-cyclonedds.conf
+RUN echo "net.core.rmem_max=8388608\nnet.core.rmem_default=8388608\n" >> /etc/sysctl.d/60-cyclonedds.conf
 RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc
 RUN echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc
 RUN ["/bin/bash", "-c", "source ~/.bashrc"]
